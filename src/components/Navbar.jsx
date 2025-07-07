@@ -1,31 +1,35 @@
-import React from "react";
+import React, { useRef } from "react";
 import { navLinks } from "../constants";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
+import ScrollTrigger from "gsap/ScrollTrigger";
 
 export default function Navbar() {
+  const navRef = useRef(null);
   useGSAP(() => {
-    const navTween = gsap.timeline({
-      scrollTrigger: {
-        trigger: "nav",
-        start: "bottom top",
+    ScrollTrigger.create({
+      trigger: navRef.current,
+      start: "top top",
+      end: "+=100",
+      onEnter: () => {
+        gsap.to(navRef.current, {
+          backgroundColor: "#00000050",
+          backdropFilter: "blur(10px)",
+          duration: 0.5,
+        });
+      },
+      onLeaveBack: () => {
+        gsap.to(navRef.current, {
+          backgroundColor: "transparent",
+          backdropFilter: "none",
+          duration: 0.5,
+        });
       },
     });
-
-    navTween.fromTo(
-      "nav",
-      { backgroundColor: "transparent" },
-      {
-        backgroundColor: "#00000050",
-        backgroundFilter: "blur(10px)",
-        duration: 1,
-        ease: "power1.inOut",
-      },
-    );
-  });
+  }, []);
 
   return (
-    <nav>
+    <nav ref={navRef}>
       <div>
         <a href="#" className="flex items-center gap-2">
           <img src="../../public/images/logo.png" alt="logo" />
